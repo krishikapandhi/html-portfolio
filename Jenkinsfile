@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from GitHub
-                git 'https://github.com/krishikapandhi/html-portfolio.git'
+               git branch: 'main', url: 'https://github.com/krishikapandhi/html-portfolio.git'
             }
         }
         stage('Check Node Version') {
