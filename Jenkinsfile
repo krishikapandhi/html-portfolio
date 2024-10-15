@@ -2,28 +2,32 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/krishikapandhi/html-portfolio.git'
+            }
+        }
         stage('Build') {
             steps {
-                echo 'Building...'
-                // Example command: compile your code or build your app
-                sh 'echo "Building application..."'
+                sh './build.sh'  // Replace with your build command
             }
         }
         stage('Test') {
             steps {
-                echo 'Testing...'
-                // Example command: run tests
-                sh 'echo "Running tests..."'
+                sh './test.sh'  // Replace with your test command
             }
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying...'
-                // Example command: deploy your application
-                // For example, using Docker
-                sh 'docker build -t your-image-name .'
-                sh 'docker run -d -p 8080:8080 your-image-name'
+                sh './deploy.sh'  // Replace with your deployment command
             }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+            junit '**/target/test-*.xml'
         }
     }
 }
