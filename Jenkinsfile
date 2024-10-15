@@ -1,33 +1,38 @@
 pipeline {
     agent any
 
+  environment {
+        NODE_HOME = tool name: 'NodeJS', type: 'nodejs'
+        PATH = "${NODE_HOME}/bin:${env.PATH}"
+    }
+    
+
     stages {
         stage('Checkout') {
             steps {
+                // Checkout the code from GitHub
                 git 'https://github.com/krishikapandhi/html-portfolio.git'
             }
         }
-        stage('Build') {
-            steps {
-                sh './build.sh'  // Replace with your build command
+        stage('Check Node Version') {
+                steps {
+                    bat 'node -v' // This should print the Node.js version
+                    bat 'npm -v'  // This should print the npm version
+                }
             }
-        }
-        stage('Test') {
-            steps {
-                sh './test.sh'  // Replace with your test command
-            }
-        }
-        stage('Deploy') {
-            steps {
-                sh './deploy.sh'  // Replace with your deployment command
-            }
-        }
-    }
 
-    post {
-        always {
-            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
-            junit '**/target/test-*.xml'
+        stage('Install Dependencies') {
+            steps {
+                // Install npm dependencies
+                bat 'npm install'
+            }
         }
+        stage('Run nodejs app') {
+            steps {
+                bat 'npm start '
+            }
+        }
+               
     }
 }
+
